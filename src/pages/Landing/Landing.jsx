@@ -1,5 +1,8 @@
+import ResumeAnalyzerHero from "./Hero";
+import Navbar from "../../components/Navbar/Navbar";
 export default function LandingSection(){
     return <>
-        <h1>This is my Landing Page</h1>
+        <Navbar/>
+        <ResumeAnalyzerHero/>
     </>
 }
