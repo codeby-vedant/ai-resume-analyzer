@@ -7,7 +7,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:5000/api/google/auth",
+      callbackURL: "https://ai-resume-analyzer-rdsq.onrender.com/api/google/auth",
     },
 
     async (accessToken, refreshToken, profile, done) => {
