@@ -1,1 +1,1 @@
-export const API_URL = import.meta.env.BACK_API_URL;
+export const API_URL = import.meta.env.VITE_BACK_API_URL;
