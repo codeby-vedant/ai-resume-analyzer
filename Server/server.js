@@ -47,7 +47,7 @@ app.use("/api/upload", tokenVerifier, uploadRouter);
 app.use("/api/analyze", tokenVerifier, AIrouter);
 app.use("/api/analysisPage", tokenVerifier, renderAnalyze);
 app.use("/api/dashboard", tokenVerifier, renderDashboard);
-app.use("/api/info",getCurrentUser);
+app.use("/api/info",tokenVerifier,getCurrentUser);
 app.use("/api",logoutHandler);
 app.use("/api/reset",emailer);
 app.use("/api/compare",tokenVerifier,matcher);
