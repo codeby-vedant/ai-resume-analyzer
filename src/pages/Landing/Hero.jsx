@@ -1,6 +1,6 @@
 import React, { useEffect, useRef,useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {} from "../../utils/api";
+import {API_URL} from "../../utils/api";
 
 export default function HeroColorfulV3() {
   const rootRef = useRef(null);
