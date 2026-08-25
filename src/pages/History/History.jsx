@@ -2,7 +2,7 @@ import NavbarResumeIQFinal from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
 import React,{useState,useEffect} from "react";
 import { useNavigate } from "react-router-dom";
-
+import {API_URL} from "../../utils/api"
 export default function HistoryPage() {
   const [resumes, setResumes] = useState([]);
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ export default function HistoryPage() {
   useEffect(() => {
     const fetchResumes = async () => {
       try {
-        const res = await fetch("/api/dashboard/resumes", { credentials: "include" });
+        const res = await fetch(`${API_URL}/api/dashboard/resumes`, { credentials: "include" });
         if (res.ok) {
           const data = await res.json();
           setResumes(data.resumes||[]);

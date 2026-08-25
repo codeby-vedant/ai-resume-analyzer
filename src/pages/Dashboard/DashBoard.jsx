@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import NavbarResumeIQFinal from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
 import ReactMarkdown from "react-markdown";
+import {API_URL} from "../../utils/api"
 
 
 import { useNavigate } from "react-router-dom";
@@ -21,7 +22,7 @@ export default function Dashboard() {
   const handleAnalyze = async (resumeId) => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/analyze/${resumeId}/resume`, {
+      const response = await fetch(`${API_URL}/api/analyze/${resumeId}/resume`, {
         method: "POST",
         credentials: "include",
       });
@@ -54,7 +55,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     const fetchTip = async () => {
-      const res = await fetch("/api/today/tip");
+      const res = await fetch(`${API_URL}/api/today/tip`);
       if (!res.ok) {
         throw new Error(`OpenAI API error: ${res.status}`);
       }
@@ -75,7 +76,7 @@ export default function Dashboard() {
       formData.append("matcherResume", matchResumeFile); // file user uploaded
       formData.append("description", description); // pasted job description
 
-      const res = await fetch(`/api/compare/match`, {
+      const res = await fetch(`${API_URL}/api/compare/match`, {
         method: "POST",
         credentials: "include", // keep cookies/session
         body: formData, // send multipart/form-data
@@ -103,7 +104,7 @@ export default function Dashboard() {
     formData.append("resume", file);
 
     try {
-      const response = await fetch("/api/upload/resume", {
+      const response = await fetch(`${API_URL}/api/upload/resume`, {
         method: "POST",
         credentials: "include", // send JWT cookie
         body: formData,
@@ -120,7 +121,7 @@ export default function Dashboard() {
       }
 
       // Refresh resumes list immediately
-      const refresh = await fetch("/api/dashboard/resumes", {
+      const refresh = await fetch(`${API_URL}/api/dashboard/resumes`, {
         credentials: "include",
       });
       const updated = await refresh.json();
@@ -148,7 +149,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchResumes = async () => {
       try {
-        const response = await fetch("/api/dashboard/resumes", {
+        const response = await fetch(`${API_URL}/api/dashboard/resumes`, {
           method: "GET",
           credentials: "include", //  ensures cookies are sent
         });

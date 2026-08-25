@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { generateReportPDF } from "../../utils/downloadReport";
 import NavbarResumeIQFinal from "../../components/Navbar/Navbar";
+import { API_URL } from "../utils/api";
 export default function AnalysisPage() {
   const { resumeId } = useParams();
   const [analysis, setAnalysis] = useState(null);
@@ -10,7 +11,7 @@ export default function AnalysisPage() {
   useEffect(() => {
     const fetchAnalysis = async () => {
       try {
-        const res = await fetch(`/api/getAnalysis/${resumeId}/resume`, {
+        const res = await fetch(`${API_URL}/api/getAnalysis/${resumeId}/resume`, {
           method: "GET",
           credentials: "include",
         });

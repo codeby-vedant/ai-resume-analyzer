@@ -1,6 +1,6 @@
 import React, { useEffect, useRef,useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import {} from "../../utils/api";
 
 export default function HeroColorfulV3() {
   const rootRef = useRef(null);
@@ -46,7 +46,7 @@ export default function HeroColorfulV3() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("/api/info/me", {
+        const res = await fetch(`${API_URL}/api/info/me`, {
           method: "GET",
           credentials: "include",
         });

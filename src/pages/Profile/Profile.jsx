@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import NavbarResumeIQFinal from "../../components/Navbar/Navbar";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../components/Footer/Footer";
+import {API_URL} from "../../utils/api";
 export default function ProfilePage() {
   const navigate = useNavigate();
   const [user, setUser] = useState({
@@ -23,7 +24,7 @@ export default function ProfilePage() {
     formData.append("profilePic", file);
 
     try {
-      const res = await fetch("/api/profile/photo/update", {
+      const res = await fetch(`${API_URL}/api/profile/photo/update`, {
         method: "PATCH",
         credentials: "include",
         body: formData, // send file as multipart/form-data
@@ -47,7 +48,7 @@ export default function ProfilePage() {
 
   const handleSave = async () => {
     try {
-      const res = await fetch("/api/profile/update", {
+      const res = await fetch(`${API_URL}/api/profile/update`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -80,7 +81,7 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("/api/info/me", {
+        const res = await fetch(`${API_URL}/api/info/me`, {
           method: "GET",
           credentials: "include",
         });
