@@ -8,7 +8,7 @@ import ProfilePage from "./pages/Profile/Profile";
 import HistoryPage from "./pages/History/History";
 import ForgetPassword from "./pages/forget-password/forget-password";
 import ResetPassword from "./pages/ResetPassword/ResetPassword";
-import ViewAnalysisPage from "./pages/ViewAnalysis/viewAnalysis";
+import ViewAnalysisPage from "./pages/ViewAnalysis/ViewAnalysis";
 export default function App() {
   return (
     <Routes>
