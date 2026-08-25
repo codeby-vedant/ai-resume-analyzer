@@ -3,8 +3,8 @@ const logoutHandler = express.Router();
 logoutHandler.post("/logout",async (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    secure: true,
+    sameSite: "none",
   });
   return res.json({ msg: "Logged out successfully" });
 });
