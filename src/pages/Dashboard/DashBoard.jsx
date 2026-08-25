@@ -21,7 +21,7 @@ export default function Dashboard() {
   const handleAnalyze = async (resumeId) => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/analyze/${resumeId}/resume/`, {
+      const response = await fetch(`/api/analyze/${resumeId}/resume`, {
         method: "POST",
         credentials: "include",
       });
