@@ -9,7 +9,7 @@ const googleLogin = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "none",
       maxAge: 3 * 60 * 60 * 1000,
     });
     res.redirect("https://ai-resume-analyzer-kqbk-steel.vercel.app/dashboard");
