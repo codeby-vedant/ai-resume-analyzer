@@ -8,7 +8,7 @@ const googleLogin = async (req, res) => {
     });
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       sameSite: "none",
       maxAge: 3 * 60 * 60 * 1000,
     });
