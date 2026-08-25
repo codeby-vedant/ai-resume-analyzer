@@ -1,0 +1,26 @@
+const resume = require("../models/resume");
+const saveResponseToDb = async (response, resumeId) => {
+  try {
+    const newResume = await resume.findByIdAndUpdate(
+      resumeId,
+      {
+       $set: {
+      "analysis.score": response.analysis.score,
+      "analysis.strengths": response.analysis.strengths,
+      "analysis.weaknesses": response.analysis.weaknesses,
+      "analysis.missingKeywords": response.analysis.missingKeywords,
+      "analysis.suggestions": response.analysis.suggestions,
+    },
+      },
+      // { new: true },//returns new Document
+    );
+    await newResume.save();
+    
+    return newResume;
+  } catch (err) {
+    console.log(err);//debug
+    throw new Error("Response not saved to Db");
+    
+  }
+};
+module.exports=saveResponseToDb;

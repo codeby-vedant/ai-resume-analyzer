@@ -13,20 +13,18 @@ const resumeSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    score: {
-      type: Number,
-      default: null,
-    },
-    suggestions: [String],
+
     text: {
       type: String,
       required: true,
     },
 
     analysis: {
+      score: {type:Number,Default:null},
       strengths: [String],
-      weakness: [String],
-      missingKeyword: [String],
+      weaknesses: [String],
+      missingKeywords: [String],
+      suggestions: [String],
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,

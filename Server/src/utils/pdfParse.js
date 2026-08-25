@@ -5,7 +5,7 @@ const textExtracter = async (fileBuffer) => {
     const content=await parser.getText();
     return content.text;
   } catch (err) {
-    console.log(err);
+    console.log(err);//debug
     throw new Error("PDF extraction failed");
   }
 };

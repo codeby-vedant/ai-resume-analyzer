@@ -1,7 +1,6 @@
-const cloudinary = require("../config/cloudinary");
 const Resume = require("../models/resume");
 const textExtracter = require("../utils/pdfParse");
-const uploadToCloud = require("../utils/uploadToCloud");
+const { uploadToCloud } = require("../utils/uploadToCloud");
 const uploadAndExtract = async (req, res) => {
   try {
     if (!req.file) {
@@ -9,7 +8,7 @@ const uploadAndExtract = async (req, res) => {
     }
     const fileBuffer = req.file.buffer;
     const cloudinaryResult = await uploadToCloud(fileBuffer); //Upload to Cloudnary
-    console.log(cloudinaryResult); //debug
+    //  console.log(cloudinaryResult); //debug
     const content = await textExtracter(fileBuffer); // pdf parsing
 
     const resume = await Resume.create({
@@ -17,10 +16,11 @@ const uploadAndExtract = async (req, res) => {
       url: cloudinaryResult.secure_url,
       text: content,
       public_id: cloudinaryResult.public_id,
-      originalName: cloudinaryResult.original_filename,
+      originalName: req.file.originalname,
     });
 
     return res.status(201).json({
+      resume: resume,
       msg: "Upload Successful",
       url: cloudinaryResult.secure_url,
       text: content,

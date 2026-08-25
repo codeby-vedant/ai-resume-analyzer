@@ -3,10 +3,10 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { generateReportPDF } from "../../utils/downloadReport";
 import NavbarResumeIQFinal from "../../components/Navbar/Navbar";
-export default function AnalysisPage() {
-  const { resumeId } = useParams();
+export default function ViewAnalysisPage() {
+  const { resumeId } = useParams(); 
   const [analysis, setAnalysis] = useState(null);
-
+ 
   useEffect(() => {
     const fetchAnalysis = async () => {
       try {
@@ -17,9 +17,6 @@ export default function AnalysisPage() {
 
         console.log("Response status:", res);
         const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data.message || "Failed to fetch analysis");
-        }
         console.log("Response status:", data);
         setAnalysis(data.analysis);
       } catch (err) {
@@ -28,6 +25,8 @@ export default function AnalysisPage() {
     };
     fetchAnalysis();
   }, [resumeId]);
+
+ 
 
   if (!analysis) {
     return (
@@ -54,7 +53,7 @@ export default function AnalysisPage() {
               d="M4 12a8 8 0 018-8v8H4z"
             ></path>
           </svg>
-          <p className="text-slate-700">Getting your resume...</p>
+          <p className="text-slate-700">Opening your resume...</p>
         </div>
       </div>
     );
@@ -70,7 +69,7 @@ export default function AnalysisPage() {
         </h1>
         <button
           onClick={() => generateReportPDF(analysis)}
-          className="px-6 py-2 rounded-lg font-semibold text-white bg-gradient-to-r from-indigo-500 to-emerald-400 shadow-md hover:scale-[1.02] transition cursor-pointer"
+          className="px-6 py-2 rounded-lg font-semibold text-white bg-gradient-to-r from-indigo-500 to-emerald-400 shadow-md hover:scale-[1.02] transition"
         >
           Download Report
         </button>
@@ -134,6 +133,8 @@ export default function AnalysisPage() {
           </ul>
         </div>
       </div>
+
+      
     </div>
   );
 }

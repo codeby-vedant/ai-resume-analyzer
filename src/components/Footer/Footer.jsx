@@ -30,8 +30,8 @@ export default function Footer() {
           <h3 className="text-lg font-semibold mb-4 text-white">Contact</h3>
           <ul className="space-y-2 text-sm">
             <li>Email: <a href="mailto:support@resumeiq.com" className="hover:text-indigo-400">support@resumeiq.com</a></li>
-            <li>Phone: <span className="hover:text-indigo-400">+91 98765 43210</span></li>
-            <li>Location: Gola, Uttar Pradesh, India</li>
+            <li>Phone: <span className="hover:text-indigo-400">+91 9450257206</span></li>
+            <li>Location: Ghaziabad, Uttar Pradesh, India</li>
           </ul>
         </div>
       </div>

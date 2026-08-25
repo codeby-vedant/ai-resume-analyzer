@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { jwtDecode } from "jwt-decode";
+
 import ResumeIQLogo from "../Logo/Logo";
 
 export default function NavbarResumeIQFinal() {
@@ -19,16 +19,25 @@ export default function NavbarResumeIQFinal() {
   }, []);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
+    const fetchUser = async () => {
       try {
-        const decoded = jwtDecode(token);
-        setUser(decoded);
+        const res = await fetch("/api/info/me", {
+          method: "GET",
+          credentials: "include",
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data); // backend already excludes password
+        } else {
+          setUser(null);
+        }
       } catch (err) {
-        console.error("Invalid token", err);
+        console.error("Failed to fetch user", err);
         setUser(null);
       }
-    }
+    };
+
+    fetchUser();
   }, []);
 
   useEffect(() => {
@@ -38,11 +47,6 @@ export default function NavbarResumeIQFinal() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setUser(null);
-  };
 
   const NavLink = ({ id, href, children }) => {
     const isActive = active === id;
@@ -81,7 +85,7 @@ export default function NavbarResumeIQFinal() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <a href="#home" onClick={() => setActive("home")}>
+            <a href="/" onClick={() => setActive("home")}>
               <ResumeIQLogo />
             </a>
           </div>
@@ -89,11 +93,110 @@ export default function NavbarResumeIQFinal() {
           {/* Center Links */}
           <div className="hidden lg:flex lg:flex-1 lg:justify-center">
             <ul className="flex items-center gap-8">
-              <li><NavLink id="home" href="#home">Home</NavLink></li>
-              <li><NavLink id="features" href="#features">Features</NavLink></li>
-              <li><NavLink id="about" href="#about">About</NavLink></li>
-              {user && <li><NavLink id="history" href="#history">History</NavLink></li>}
-              {user && <li><NavLink id="profile" href="#profile">Profile</NavLink></li>}
+              <li>
+                <NavLink
+                  id={user ? "dashboard" : "home"}
+                  href={user ? "/dashboard" : "/"}
+                >
+                  {user ? "Dashboard" : "Home"}
+                </NavLink>
+              </li>
+              <li className="relative group">
+                <NavLink id="features" href="#features">
+                  Features
+                </NavLink>
+                <div
+                  className="absolute left-0 mt-2 w-64 rounded-lg shadow-lg 
+                  opacity-0 translate-y-2 transition-all duration-300 ease-out 
+                  group-hover:opacity-100 group-hover:translate-y-0 
+                  pointer-events-none group-hover:pointer-events-auto 
+                  bg-gradient-to-br from-indigo-50 via-purple-50 to-emerald-50"
+                >
+                  <ul className="p-4 space-y-3 text-slate-700">
+                    <li className="flex items-center gap-2 px-3 py-2 rounded-md bg-indigo-100 hover:bg-indigo-200 cursor-pointer">
+                      📄{" "}
+                      <span className="font-medium text-indigo-700">
+                        AI Resume Analysis
+                      </span>
+                    </li>
+                    <li className="flex items-center gap-2 px-3 py-2 rounded-md bg-pink-100 hover:bg-pink-200 cursor-pointer">
+                      🎯{" "}
+                      <span className="font-medium text-pink-700">
+                        ATS Score
+                      </span>
+                    </li>
+                    <li className="flex items-center gap-2 px-3 py-2 rounded-md bg-amber-100 hover:bg-amber-200 cursor-pointer">
+                      🔑{" "}
+                      <span className="font-medium text-amber-700">
+                        Missing Keywords
+                      </span>
+                    </li>
+                    <li className="flex items-center gap-2 px-3 py-2 rounded-md bg-emerald-100 hover:bg-emerald-200 cursor-pointer">
+                      💼{" "}
+                      <span className="font-medium text-emerald-700">
+                        Job Description Matcher
+                      </span>
+                    </li>
+                    <li className="flex items-center gap-2 px-3 py-2 rounded-md bg-purple-100 hover:bg-purple-200 cursor-pointer">
+                      📊{" "}
+                      <span className="font-medium text-purple-700">
+                        Resume Analysis History
+                      </span>
+                    </li>
+                    <li className="flex items-center gap-2 px-3 py-2 rounded-md bg-blue-100 hover:bg-blue-200 cursor-pointer">
+                      👤{" "}
+                      <span className="font-medium text-blue-700">
+                        Profile Management
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              {/* About dropdown */}
+              <li className="relative group">
+                <NavLink id="about" href="#about">
+                  About
+                </NavLink>
+                <div
+                  className="absolute left-0 mt-2 w-64 rounded-lg shadow-lg 
+                  opacity-0 translate-y-2 transition-all duration-300 ease-out 
+                  group-hover:opacity-100 group-hover:translate-y-0 
+                  pointer-events-none group-hover:pointer-events-auto 
+                  bg-gradient-to-br from-gray-50 via-indigo-50 to-purple-50"
+                >
+                  <ul className="p-4 space-y-3 text-slate-700">
+                    <li className="flex items-center gap-2 px-3 py-2 rounded-md bg-green-100 hover:bg-green-200 cursor-pointer">
+                      🌱{" "}
+                      <span className="font-medium text-green-700">
+                        Our Mission
+                      </span>
+                    </li>
+                    <li className="flex items-center gap-2 px-3 py-2 rounded-md bg-blue-100 hover:bg-blue-200 cursor-pointer">
+                      👥 <span className="font-medium text-blue-700">Team</span>
+                    </li>
+                    <li className="flex items-center gap-2 px-3 py-2 rounded-md bg-amber-100 hover:bg-amber-200 cursor-pointer">
+                      📞{" "}
+                      <span className="font-medium text-amber-700">
+                        Contact
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              {user && (
+                <li>
+                  <NavLink id="history" href="/history">
+                    History
+                  </NavLink>
+                </li>
+              )}
+              {user && (
+                <li>
+                  <NavLink id="profile" href="/profile">
+                    Profile
+                  </NavLink>
+                </li>
+              )}
             </ul>
           </div>
 
@@ -102,13 +205,13 @@ export default function NavbarResumeIQFinal() {
             {!user ? (
               <>
                 <a
-                  href="#signup"
+                  href="/signup"
                   className="px-4 py-2 rounded-md font-semibold text-white bg-gradient-to-r from-indigo-500 to-emerald-400 shadow-md hover:scale-[1.02] transition"
                 >
                   Sign up
                 </a>
                 <a
-                  href="#login"
+                  href="/login"
                   className="px-4 py-2 rounded-md font-semibold text-indigo-600 bg-white shadow-md hover:bg-gray-100 transition"
                 >
                   Log in
@@ -117,17 +220,13 @@ export default function NavbarResumeIQFinal() {
             ) : (
               <div className="flex items-center gap-3">
                 <img
-                  src={user.photo || "https://via.placeholder.com/40"}
+                  src={
+                    user.profilePhoto?.url || "https://via.placeholder.com/120"
+                  }
                   alt="Profile"
                   className="w-10 h-10 rounded-full border-2 border-white"
                 />
-                <span className="font-semibold">{user.name}</span>
-                <button
-                  onClick={handleLogout}
-                  className="px-4 py-2 rounded-md bg-pink-500 text-white font-semibold shadow-md hover:bg-pink-600 transition"
-                >
-                  Log Out
-                </button>
+                <span className="font-semibold">{user.name.split(" ")[0]}</span>
               </div>
             )}
           </div>
