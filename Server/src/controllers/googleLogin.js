@@ -12,7 +12,8 @@ const googleLogin = async (req, res) => {
       sameSite: "strict",
       maxAge: 3 * 60 * 60 * 1000,
     });
-   res.redirect("https://ai-resume-analyzer-kqbk-steel.vercel.app/dashboard");
+    res.redirect("ai-resume-analyzer-kqbk-steel.vercel.app/dashboard");
+  } catch (err) {
     console.log(err); //debug
     return res.status(500).json({ error: "google login failed" });
   }
