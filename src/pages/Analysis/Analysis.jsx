@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { generateReportPDF } from "../../utils/downloadReport";
 import NavbarResumeIQFinal from "../../components/Navbar/Navbar";
-import { API_URL } from "../utils/api";
+import { API_URL } from "../../utils/api";
 export default function AnalysisPage() {
   const { resumeId } = useParams();
   const [analysis, setAnalysis] = useState(null);

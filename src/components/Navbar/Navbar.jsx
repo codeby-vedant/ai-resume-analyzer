@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import ResumeIQLogo from "../Logo/Logo";
-
+import {API_URL} from "../../utils/api";
 export default function NavbarResumeIQFinal() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("home");
@@ -21,7 +21,7 @@ export default function NavbarResumeIQFinal() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("/api/info/me", {
+        const res = await fetch(`${API_URL}/api/info/me`, {
           method: "GET",
           credentials: "include",
         });
