@@ -18,5 +18,4 @@ transporter.verify((error, success) => {
     console.log("SMTP server is ready");
   }
 });
-
 module.exports = transporter;
