@@ -2,8 +2,9 @@ const express = require("express");
 const emailer = express.Router();
 const crypto = require("crypto");
 const User = require("../models/user");
-const transporter = require("../utils/sendEmail");
+const resend = require("../utils/sendEmail");
 const bcrypt = require("bcrypt");
+
 emailer.post("/resetpassword", async (req, res) => {
   try {
     const { email } = req.body;
@@ -24,24 +25,28 @@ emailer.post("/resetpassword", async (req, res) => {
     existingUser.resetPasswordToken = hashedResetToken;
     existingUser.resetPasswordExpires = Date.now() + 3600000; //1 hr expiry
     await existingUser.save();
-    const resetLink = `http://localhost:5173/reset/${resetToken}`;
+    const resetLink = `https://ai-resume-analyzer-kqbk-steel.vercel.app/reset/${resetToken}`;
 
-    const info = transporter.sendMail({
-      from: process.env.SMTP_USER,
+    const { data, error } = await resend.emails.send({
+      from: "ResumeIQ <onboarding@resend.dev>",
       to: email,
-      Subject: "Password Reset",
+      subject: "Password Reset",
       text: `Click here to reset your password: ${resetLink}`,
     });
+
+    if (error) {
+      console.error("Email sending failed:", error);
+      throw new Error("Failed to send password reset email");
+    }
     return res.status(200).json({ msg: "Mail sent" });
   } catch (err) {
-    console.log(err); //debug
+    console.error(err); //debug
     return res.status(500).json({ error: "Internal server error" });
   }
 });
 emailer.post("/resetPassword/:resetToken", async (req, res) => {
   try {
     const resetToken = req.params.resetToken;
-    
 
     const { newPassword } = req.body;
     if (!newPassword) {
