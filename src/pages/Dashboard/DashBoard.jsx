@@ -14,13 +14,14 @@ export default function Dashboard() {
   const [matchResumeFile, setMatchResumeFile] = useState(null);
   const [tip, setTip] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [analyzing, setAnalyzing] = useState(false);
   const [matching, setMatching] = useState(false);
 
   const navigate = useNavigate();
 
   // Navigate to analysis page
   const handleAnalyze = async (resumeId) => {
-    setLoading(true);
+    setAnalyzing(true);
     try {
       const response = await fetch(
         `${API_URL}/api/analyze/${resumeId}/resume`,
@@ -37,6 +38,8 @@ export default function Dashboard() {
       }
     } catch (err) {
       console.log(err + "Failed to fetch"); //debug
+          setAnalyzing(false);
+
     }
   };
   //navigate to viewAnalysis page
@@ -56,19 +59,27 @@ export default function Dashboard() {
 
   /// to generate tip of the day
 
-  useEffect(() => {
-    const fetchTip = async () => {
+ useEffect(() => {
+  const fetchTip = async () => {
+    try {
       const res = await fetch(`${API_URL}/api/today/tip`, {
         credentials: "include",
       });
+
       if (!res.ok) {
-        throw new Error(`OpenAI API error: ${res.status}`);
+        throw new Error(`Tip API error: ${res.status}`);
       }
+
       const data = await res.json();
       setTip(data.tip);
-    };
-    fetchTip();
-  }, []);
+    } catch (err) {
+      console.error("Failed to fetch tip:", err);
+      setTip("Keep improving your resume one step at a time.");
+    }
+  };
+
+  fetchTip();
+}, []);
 
   const handleMatchResume = async () => {
     try {
@@ -186,7 +197,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-purple-50 via-purple-100 to-purple-200 flex flex-col">
-      {loading && (
+      {analyzing && (
         <div
           className="fixed inset-0 flex flex-col items-center justify-center 
                 bg-gradient-to-r from-purple-100 via-purple-200 to-purple-300 
