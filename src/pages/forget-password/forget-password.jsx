@@ -1,6 +1,6 @@
 import { useState } from "react";
 import ResumeIQLogo from "../../components/Logo/Logo";
-
+import {API_URL} from "../../utils/api"
 export default function ForgetPassword() {
   const [email, setEmail] = useState("");
 const [status, setStatus] = useState(null);
@@ -9,7 +9,7 @@ const [message, setMessage] = useState(null);
     e.preventDefault();
     
      try {
-      const response = await fetch("/api/reset/resetpassword", {
+      const response = await fetch(`${API_URL}/api/reset/resetpassword`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
