@@ -13,7 +13,7 @@ export default function Dashboard() {
   const [matchResult, setMatchResult] = useState(null);
   const [matchResumeFile, setMatchResumeFile] = useState(null);
   const [tip, setTip] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [matching, setMatching] = useState(false);
 
   const navigate = useNavigate();
