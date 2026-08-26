@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ResumeIQLogo from "../../components/Logo/Logo";
 import Footer from "../../components/Footer/Footer";
 import Alert from "../../components/ErrorHandler/Alert";
-
+import {API_URL} from "../../utils/api"
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,7 +13,7 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const res = await fetch("/api/auth/login", {
+      const res = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

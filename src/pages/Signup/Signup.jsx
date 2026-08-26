@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ResumeIQLogo from "../../components/Logo/Logo";
 import Footer from "../../components/Footer/Footer";
-
+import {API_URL} from "../../utils/api";
 export default function SignUp() {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -32,7 +32,7 @@ export default function SignUp() {
     }
 
     try {
-      const res = await fetch("/api/auth/register", {
+      const res = await fetch(`${API_URL}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include", //  allows cookies to be sent/received

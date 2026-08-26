@@ -24,7 +24,7 @@ const app = express();
 connectDB();
 app.use(
   cors({
-    origin: "https://ai-resume-analyzer-kqbk-steel.vercel.app", //“Allow my React app at http://localhost:5173 to talk to this Express server, and let it send cookies (JWT) along with requests.”
+    origin: "https://ai-resume-analyzer-kqbk-steel.vercel.app", //“Allow my React app at to talk to this Express server, and let it send cookies (JWT) along with requests.”
     credentials: true,
   }),
 );
