@@ -1,18 +1,35 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import ResumeIQLogo from "../../components/Logo/Logo";
-import Footer from "../../components/Footer/Footer";
 import Alert from "../../components/ErrorHandler/Alert";
-import {API_URL} from "../../utils/api"
+import { API_URL } from "../../utils/api";
+
 export default function Login() {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("error");
+
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
+    setMessage("");
+
+    if (!email || !password) {
+      setMessage("Please enter your email and password.");
+      setMessageType("error");
+      return;
+    }
+
     try {
+      setLoading(true);
+
       const res = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
         headers: {
@@ -27,39 +44,58 @@ export default function Login() {
 
       const data = await res.json();
 
+      console.log("Login response:", data);
+
       if (!res.ok) {
-        console.log(data); //debug
-        setMessage(data.msg||data.error || "Login failed");
+        setMessage(
+          data.msg ||
+            data.error ||
+            data.message ||
+            "Invalid email or password."
+        );
         setMessageType("error");
         return;
       }
 
-      console.log("Login successful:", data); //debug
-
-      // Redirect to dashboard
       setMessage("Login successful! Redirecting...");
       setMessageType("success");
+
+      // Small delay so user can see success message
       setTimeout(() => {
-        window.location.href = "/dashboard";
-      }, 3000);
+        navigate("/dashboard");
+      }, 1000);
     } catch (err) {
-      console.log(err);
+      console.error("Login error:", err);
+
+      setMessage("Unable to connect to the server. Please try again.");
+      setMessageType("error");
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleGoogleLogin = () => {
+    window.location.href = `${API_URL}/api/google`;
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-50 via-purple-100 to-purple-200">
       <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 p-10">
+
         {/* Left side branding */}
         <div className="flex flex-col justify-center px-6">
           <ResumeIQLogo />
-          <p className="text-lg text-gray-600 mt-2">AI Resume Analyzer</p>
+
+          <p className="text-lg text-gray-600 mt-2">
+            AI Resume Analyzer
+          </p>
 
           <p className="text-4xl font-extrabold text-gray-800 mt-10 mb-8 leading-snug">
             Welcome back to ResumeIQ
           </p>
 
           <ul className="space-y-6 text-lg text-gray-700">
+
             <li className="flex items-center">
               <svg
                 className="h-6 w-6 text-indigo-500 mr-3"
@@ -70,6 +106,7 @@ export default function Login() {
               </svg>
               Access your ATS scores
             </li>
+
             <li className="flex items-center">
               <svg
                 className="h-6 w-6 text-pink-500 mr-3"
@@ -80,6 +117,7 @@ export default function Login() {
               </svg>
               Review keyword suggestions
             </li>
+
             <li className="flex items-center">
               <svg
                 className="h-6 w-6 text-yellow-500 mr-3"
@@ -90,6 +128,7 @@ export default function Login() {
               </svg>
               Improve bullet rewrites
             </li>
+
             <li className="flex items-center">
               <svg
                 className="h-6 w-6 text-emerald-500 mr-3"
@@ -100,35 +139,57 @@ export default function Login() {
               </svg>
               Continue building interview readiness
             </li>
+
           </ul>
         </div>
 
-        {/* Right side form card */}
+        {/* Right side form */}
         <div className="bg-white rounded-2xl shadow-2xl p-12 flex flex-col justify-center">
+
           <h2 className="text-3xl font-bold text-gray-800 mb-3">
             Log In to Your Account
           </h2>
+
           <p className="text-gray-600 mb-10 text-lg">
             Access your personalized resume insights
           </p>
-          {message && <Alert message={message} type={messageType} />}
-          <form onSubmit={handleLogin} className="space-y-7">
+
+          {/* Alert */}
+          {message && (
+            <div className="mb-5">
+              <Alert
+                message={message}
+                type={messageType}
+              />
+            </div>
+          )}
+
+          <form
+            onSubmit={handleLogin}
+            className="space-y-7"
+          >
+
+            {/* Email */}
             <input
               type="email"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
               className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
+
+            {/* Password */}
             <input
               type="password"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
               className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
 
-            {/* Forgot password link */}
+            {/* Forgot password */}
             <div className="flex justify-end">
               <a
                 href="/forgetPassword"
@@ -138,34 +199,52 @@ export default function Login() {
               </a>
             </div>
 
-            {/* Gradient login button */}
+            {/* Login */}
             <button
               type="submit"
-              className="inline-flex items-center px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-500 to-emerald-400 text-white font-semibold shadow-md hover:-translate-y-0.5 transition transform focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-300 w-full justify-center cursor-pointer"
+              disabled={loading}
+              className={`inline-flex items-center px-4 py-2 rounded-lg
+                bg-gradient-to-r from-indigo-500 to-emerald-400
+                text-white font-semibold shadow-md
+                transition transform w-full justify-center
+                ${
+                  loading
+                    ? "opacity-70 cursor-not-allowed"
+                    : "hover:-translate-y-0.5 cursor-pointer"
+                }`}
             >
-              Log In
+              {loading ? "Logging in..." : "Log In"}
             </button>
 
-            {/* Continue with Google */}
+            {/* Google */}
             <button
               type="button"
-              onClick={() => {
-                window.location.href = "/api/google";
-              }}
-              className="inline-flex items-center px-4 py-2 rounded-lg border border-gray-300 text-gray-700 font-medium shadow-sm hover:bg-gray-50 transition w-full justify-center cursor-pointer"
+              onClick={handleGoogleLogin}
+              disabled={loading}
+              className="inline-flex items-center px-4 py-2 rounded-lg
+                border border-gray-300 text-gray-700 font-medium
+                shadow-sm hover:bg-gray-50 transition
+                w-full justify-center cursor-pointer"
             >
-              <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24">
+              <svg
+                className="h-5 w-5 mr-2"
+                viewBox="0 0 24 24"
+              >
                 <path
                   fill="#EA4335"
                   d="M12 11.8v2.4h6.8c-.3 1.7-2 5-6.8 5-4.1 0-7.5-3.4-7.5-7.5s3.4-7.5 7.5-7.5c2.3 0 3.9.9 4.8 1.7l1.6-1.6C17.1 3.9 14.8 3 12 3 6.5 3 2 7.5 2 13s4.5 10 10 10c5.8 0 9.7-4.1 9.7-9.9 0-.7-.1-1.2-.2-1.7H12z"
                 />
               </svg>
+
               Continue with Google
             </button>
+
           </form>
 
+          {/* Signup */}
           <p className="mt-10 text-center text-gray-600 text-lg">
             Don’t have an account?{" "}
+
             <a
               href="/signup"
               className="text-indigo-600 font-semibold hover:underline"
@@ -173,6 +252,7 @@ export default function Login() {
               Sign up
             </a>
           </p>
+
         </div>
       </div>
     </div>
