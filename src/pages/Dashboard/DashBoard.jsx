@@ -1,4 +1,201 @@
-return (
+import React, { useState, useEffect } from "react";
+import NavbarResumeIQFinal from "../../components/Navbar/Navbar";
+import Footer from "../../components/Footer/Footer";
+import ReactMarkdown from "react-markdown";
+import { API_URL } from "../../utils/api";
+
+import { useNavigate } from "react-router-dom";
+export default function Dashboard() {
+  const [newResumeId, setNewResumeId] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [description, setDescription] = useState("");
+  const [matchResult, setMatchResult] = useState(null);
+  const [matchResumeFile, setMatchResumeFile] = useState(null);
+  const [tip, setTip] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [matching, setMatching] = useState(false);
+
+  const navigate = useNavigate();
+
+  // Navigate to analysis page
+  const handleAnalyze = async (resumeId) => {
+    setAnalyzing(true);
+    try {
+      const response = await fetch(
+        `${API_URL}/api/analyze/${resumeId}/resume`,
+        {
+          method: "POST",
+          credentials: "include",
+        },
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        navigate(`/analysis/${resumeId}`);
+      }
+    } catch (err) {
+      console.log(err + "Failed to fetch"); //debug
+          setAnalyzing(false);
+
+    }
+  };
+  //navigate to viewAnalysis page
+  const viewAnalysis = (resumeId) => {
+    navigate(`/viewAnalysis/${resumeId}`);
+  };
+
+  // job description matcher
+
+  const handleMatchResumeUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setMatchResumeFile(file); // store the actual File object
+      alert(`File "${file.name}" uploaded successfully!`);
+    }
+  };
+
+  /// to generate tip of the day
+
+ useEffect(() => {
+  const fetchTip = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/today/tip`, {
+        credentials: "include",
+      });
+
+      if (!res.ok) {
+        throw new Error(`Tip API error: ${res.status}`);
+      }
+
+      const data = await res.json();
+      setTip(data.tip);
+    } catch (err) {
+      console.error("Failed to fetch tip:", err);
+      setTip("Keep improving your resume one step at a time.");
+    }
+  };
+
+  fetchTip();
+}, []);
+
+  const handleMatchResume = async () => {
+    try {
+      if (!matchResumeFile || !description) {
+        alert("Please upload a resume and paste a job description.");
+        return;
+      }
+
+      setMatching(true);
+      setMatchResult(null);
+
+      const formData = new FormData();
+      formData.append("matcherResume", matchResumeFile);
+      formData.append("description", description);
+
+      const res = await fetch(`${API_URL}/api/compare/match`, {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to match resume: ${res.status}`);
+      }
+
+      const data = await res.json();
+
+      setMatchResult(data);
+    } catch (err) {
+      console.error("Error matching resume:", err);
+      alert("Something went wrong while matching your resume.");
+    } finally {
+      setMatching(false);
+    }
+  };
+
+  // to get the upload resume functional
+  const [selectedFile, setSelectedFile] = useState(null);
+  const handleUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    setSelectedFile(file.name); //  show filename
+    setUploading(true);
+
+    const formData = new FormData();
+    formData.append("resume", file);
+
+    try {
+      const response = await fetch(`${API_URL}/api/upload/resume`, {
+        method: "POST",
+        credentials: "include", // send JWT cookie
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Upload failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.resume?._id) {
+        setNewResumeId(data.resume._id);
+      }
+
+      // Refresh resumes list immediately
+      const refresh = await fetch(`${API_URL}/api/dashboard/resumes`, {
+        credentials: "include",
+      });
+      const updated = await refresh.json();
+      setResumes(updated.resumes || []);
+      setUser(updated.user || null);
+      let current = 0;
+      const interval = setInterval(() => {
+        current += 5; // increase by 5% every 250ms
+        setProgress(current);
+        if (current >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            setUploading(false);
+            setProgress(0); // reset for next upload
+          }, 500); // small delay before hiding
+        }
+      }, 100);
+    } catch (err) {
+      console.error("Error uploading resume:", err);
+    }
+  };
+  // to get resume History and user name
+  const [resumes, setResumes] = useState([]);
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    const fetchResumes = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/dashboard/resumes`, {
+          method: "GET",
+          credentials: "include", //  ensures cookies are sent
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setResumes(data.resumes || []);
+        setUser(data.user || null);
+      } catch (err) {
+        console.error("Error fetching resumes:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchResumes();
+  }, []);
+
+  return (
   <div className="min-h-screen bg-gradient-to-r from-purple-50 via-purple-100 to-purple-200 flex flex-col">
     {/* Analyzing Overlay */}
     {analyzing && (
@@ -462,3 +659,4 @@ return (
     <Footer />
   </div>
 );
+}
