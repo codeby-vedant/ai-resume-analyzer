@@ -16,17 +16,17 @@ const [message, setMessage] = useState(null);
         },
         body: JSON.stringify({ email }),
       });
-
+      const data = await response.json();
       if (response.ok) {
         setStatus("success");
-        setMessage(response.json.msg);
+        setMessage(data.msg);
       } else {
         setStatus("error");
       }
     } catch (err) {
       console.error("Error sending reset link:", err);
       setStatus("error");
-      setMessage(response.json.error);
+      setMessage(data.error);
     }
   };
 

@@ -24,7 +24,7 @@ emailer.post("/resetpassword", async (req, res) => {
     existingUser.resetPasswordToken = hashedResetToken;
     existingUser.resetPasswordExpires = Date.now() + 3600000; //1 hr expiry
     await existingUser.save();
-    const resetLink = `ai-resume-analyzer-kqbk-steel.vercel.app/reset/${resetToken}`;
+    const resetLink = `https://ai-resume-analyzer-kqbk-steel.vercel.app/reset/${resetToken}`;
 
     const info = await transporter.sendMail({
       from: process.env.SMTP_USER,
